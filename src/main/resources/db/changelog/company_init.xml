@@ -13,7 +13,7 @@
 
                         create table company
                         (
-                                id         bigint  not null,
+                                id         bigserial  not null,
                                 name       varchar(200) not null unique,
                                 email       varchar(200) not null,
                                 created timestamp not null,

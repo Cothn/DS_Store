@@ -9,12 +9,15 @@ import java.util.Objects;
 
 @Getter
 @Setter
+@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
 @Entity
 @Table(name ="company")
 public class Company {
+
+    @Setter(AccessLevel.NONE)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -26,11 +29,10 @@ public class Company {
     @Column(name = "email",  nullable = false)
     private String email;
 
+    @Setter(AccessLevel.NONE)
     @Column(name = "created", nullable = false)
     private Timestamp created;
 
     @Column(name = "description",  nullable = false)
     private String description;
-
-
 }
