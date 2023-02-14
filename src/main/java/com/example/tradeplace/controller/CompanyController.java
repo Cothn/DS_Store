@@ -5,7 +5,13 @@ import com.example.tradeplace.service.CompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 
 import java.util.List;
 
@@ -23,7 +29,7 @@ public class CompanyController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<?> create(@RequestBody Company company){
+    public ResponseEntity<?> create(@RequestBody Company company) {
         companyService.add(company);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -50,13 +56,13 @@ public class CompanyController {
     }
 
     @RequestMapping(method = RequestMethod.PUT)
-    public ResponseEntity<?> update(@RequestBody Company company){
+    public ResponseEntity<?> update(@RequestBody Company company) {
         companyService.update(company);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<?> delete(@PathVariable(name = "id") long id){
+    public ResponseEntity<?> delete(@PathVariable(name = "id") long id) {
         companyService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }

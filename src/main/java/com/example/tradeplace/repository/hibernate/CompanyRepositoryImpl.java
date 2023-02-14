@@ -2,8 +2,8 @@ package com.example.tradeplace.repository.hibernate;
 
 import com.example.tradeplace.entity.Company;
 import com.example.tradeplace.repository.CompanyRepository;
+import com.example.tradeplace.repository.exceptions.DBFoundException;
 import com.example.tradeplace.repository.exceptions.DBModificationException;
-import com.example.tradeplace.repository.exceptions.DBNotFoundException;
 import com.example.tradeplace.repository.exceptions.RepositoryException;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -16,9 +16,8 @@ import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -33,56 +32,56 @@ public class CompanyRepositoryImpl  implements CompanyRepository {
     }
 
     @Override
-    public long add(Company company){
+    public long add(Company company) {
         long result;
         try (Session session = sessionFactory.openSession()) {
             Transaction transaction = session.beginTransaction();
-            company.setCreated(new Timestamp(new Date().getTime()));
+            company.setCreated(LocalDateTime.now());
             result = (long) session.save(company);
             transaction.commit();
-        }catch (Exception e) {
+        } catch (Exception e) {
             throw new DBModificationException("Company", "add", company.toString(), e);
         }
         return result;
     }
 
     @Override
-    public void update(Company company){
+    public void update(Company company) {
         try (Session session = sessionFactory.openSession()) {
             Transaction transaction = session.beginTransaction();
             session.update(company);
             transaction.commit();
-        }catch (Exception e) {
+        } catch (Exception e) {
             throw new DBModificationException("Company", "update", company.toString(), e);
         }
     }
 
     @Override
-    public void deleteById(long id){
+    public void deleteById(long id) {
         try (Session session = sessionFactory.openSession()) {
             Transaction transaction = session.beginTransaction();
             session.delete(session.get(Company.class, id));
             transaction.commit();
-        }catch (Exception e) {
+        } catch (Exception e) {
             throw new DBModificationException("Company", "deleteById", Long.toString(id), e);
         }
     }
 
     @Override
-    public Company findById(long id){
+    public Company findById(long id) {
         Company result;
         try (Session session = sessionFactory.openSession()) {
             Transaction transaction = session.beginTransaction();
             result = session.get(Company.class, id);
             transaction.commit();
         } catch (Exception e) {
-            throw new DBNotFoundException("Company", "findById", Long.toString(id), e);
+            throw new DBFoundException("Company", "findById", Long.toString(id), e);
         }
         return result;
     }
 
     @Override
-    public List<Company> findAll(){
+    public List<Company> findAll() {
         List<Company> companies = new ArrayList<>();
         try (Session session = sessionFactory.openSession()) {
             CriteriaBuilder cb = session.getCriteriaBuilder();
@@ -97,14 +96,14 @@ public class CompanyRepositoryImpl  implements CompanyRepository {
 
             transaction.commit();
         } catch (Exception e) {
-            throw new DBNotFoundException("Company", "findAll", "", e);
+            throw new DBFoundException("Company", "findAll", "", e);
         }
         return companies;
 
     }
 
     @Override
-    public List<Company> findAll(int pageSize, int pageNum){
+    public List<Company> findAll(int pageSize, int pageNum) {
         List<Company> companies = new ArrayList<>();
         try (Session session = sessionFactory.openSession()) {
             CriteriaBuilder cb = session.getCriteriaBuilder();
@@ -115,23 +114,23 @@ public class CompanyRepositoryImpl  implements CompanyRepository {
 
             Transaction transaction = session.beginTransaction();
 
-            companies = session.createQuery(cq)//
-                    .setFirstResult((pageNum-1)*pageSize)//
-                    .setMaxResults(pageSize)//
+            companies = session.createQuery(cq)
+                    .setFirstResult((pageNum - 1) * pageSize)
+                    .setMaxResults(pageSize)
                     .getResultList();
 
             transaction.commit();
         } catch (Exception e) {
-            String params = "pageNum: "+Long.toString(pageNum)+"; "+//
-                    "pageSize: "+Long.toString(pageSize);
-            throw new DBNotFoundException("Company", "findAll", params, e);
+            String params = "pageNum: " + Long.toString(pageNum) + "; "
+                    + "pageSize: " + Long.toString(pageSize);
+            throw new DBFoundException("Company", "findAll", params, e);
         }
         return companies;
 
     }
 
     @Override
-    public List<Company> findByNameAndEmail(String name, String email, int pageSize, int pageNum){
+    public List<Company> findByNameAndEmail(String name, String email, int pageSize, int pageNum) {
         List<Company> companies = new ArrayList<>();
         try (Session session = sessionFactory.openSession()) {
             CriteriaBuilder cb = session.getCriteriaBuilder();
@@ -152,29 +151,29 @@ public class CompanyRepositoryImpl  implements CompanyRepository {
             }
             Transaction transaction = session.beginTransaction();
 
-            companies = session.createQuery(cq)//
-                    .setFirstResult((pageNum-1)*pageSize)//
-                    .setMaxResults(pageSize)//
+            companies = session.createQuery(cq)
+                    .setFirstResult((pageNum - 1) * pageSize)
+                    .setMaxResults(pageSize)
                     .getResultList();
 
             transaction.commit();
         } catch (Exception e) {
             String params = "";
             if (name != null) {
-                params +="name: "+name+"; ";
+                params += "name: " + name + "; ";
             }
             if (email != null) {
-                params +="email: "+email+"; ";
+                params += "email: " + email + "; ";
             }
-            params +="pageNum: "+Long.toString(pageNum)+"; "+//
-                    "pageSize: "+Long.toString(pageSize);
-            throw new DBNotFoundException("Company", "findByNameAndEmail", params, e);
+            params += "pageNum: " + Long.toString(pageNum) + "; "
+                    + "pageSize: " + Long.toString(pageSize);
+            throw new DBFoundException("Company", "findByNameAndEmail", params, e);
         }
         return companies;
     }
 
     @Override
-    public long allCount(){
+    public long allCount() {
         long result;
         try (Session session = sessionFactory.openSession()) {
             CriteriaBuilder cb = session.getCriteriaBuilder();

@@ -5,7 +5,7 @@ public class DBModificationException extends RepositoryException {
     public DBModificationException(String repositoryName, String methodType, String methodParams, Exception e) {
         super(repositoryName, methodType, methodParams, e);
     }
-    public DBModificationException(RepositoryException e){
+    public DBModificationException(RepositoryException e) {
         super(e);
     }
 

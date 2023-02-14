@@ -9,8 +9,8 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
 /**
  * @author Vsevolod Grinchick
  */
-@SpringBootApplication(exclude = { //
-        DataSourceAutoConfiguration.class, //
+@SpringBootApplication(exclude = {
+        DataSourceAutoConfiguration.class,
         HibernateJpaAutoConfiguration.class })
 public class TradePlaceApplication {
 

@@ -1,11 +1,21 @@
 package com.example.tradeplace.entity;
 
-import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.Hibernate;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
-import java.sql.Timestamp;
-import java.util.Objects;
+import java.time.LocalDateTime;
+
 
 @Getter
 @Setter
@@ -14,7 +24,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @ToString
 @Entity
-@Table(name ="company")
+@Table(name = "company")
 public class Company {
 
     @Setter(AccessLevel.NONE)
@@ -30,7 +40,7 @@ public class Company {
     private String email;
 
     @Column(name = "created", nullable = false)
-    private Timestamp created;
+    private LocalDateTime created;
 
     @Column(name = "description",  nullable = false)
     private String description;

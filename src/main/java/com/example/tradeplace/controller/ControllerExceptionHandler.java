@@ -2,7 +2,7 @@ package com.example.tradeplace.controller;
 
 
 import com.example.tradeplace.repository.exceptions.DBModificationException;
-import com.example.tradeplace.repository.exceptions.DBNotFoundException;
+import com.example.tradeplace.repository.exceptions.DBFoundException;
 import com.example.tradeplace.repository.exceptions.RepositoryException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,16 +13,16 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class ControllerExceptionHandler {
-    @ExceptionHandler(DBNotFoundException.class)
+    @ExceptionHandler(DBFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<String>  DBNotFoundException(DBNotFoundException ex) {
+    public ResponseEntity<String>  handleDBFoundException(DBFoundException ex) {
 
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(DBModificationException.class)
     @ResponseStatus(HttpStatus.NOT_MODIFIED)
-    public ResponseEntity<String> DBModificationException(DBModificationException ex) {
+    public ResponseEntity<String> handleDBModificationException(DBModificationException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_MODIFIED);
     }
 
