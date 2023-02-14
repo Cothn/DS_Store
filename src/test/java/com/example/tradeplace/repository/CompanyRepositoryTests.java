@@ -1,7 +1,8 @@
 package com.example.tradeplace.repository;
 
 import com.example.tradeplace.entity.Company;
-import com.example.tradeplace.repository.hibernate.RepositoryException;
+
+import com.example.tradeplace.repository.exceptions.DBModificationException;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -9,7 +10,6 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -50,7 +50,7 @@ public class CompanyRepositoryTests {
                 new Company(null,//
                         "newCompany",//
                         "newCompany@mail.com",//
-                        new Timestamp(System.currentTimeMillis()),//
+                        null,//
                         "newCompanyDescription"));
 
         //Then
@@ -60,23 +60,23 @@ public class CompanyRepositoryTests {
     }
 
     @Test
-    void add_addAnExistCompany_notAddedAndThrowRepositoryException () {
+    void add_addAnExistCompany_notAddedAndThrowDBModificationException () {
         //Given
         companyRepository.add(
                 new Company(null,//
                         "newCompany",//
                         "newCompany@mail.com",//
-                        new Timestamp(System.currentTimeMillis()),//
+                        null,//
                         "newCompanyDescription"));
         long oldCount = companyRepository.allCount();
 
         //When
-        RepositoryException thrown = Assertions.assertThrows(RepositoryException.class, () ->
+        DBModificationException thrown = Assertions.assertThrows(DBModificationException.class, () ->
                 companyRepository.add(
                 new Company(null,//
                         "newCompany",//
                         "newCompany@mail.com",//
-                        new Timestamp(System.currentTimeMillis()),//
+                        null,//
                         "newCompanyDescription")));
 
         //Then
@@ -87,12 +87,12 @@ public class CompanyRepositoryTests {
     }
 
     @Test
-    void add_addCompanyWithNullableAttributes_notAddedAndThrowRepositoryException () {
+    void add_addCompanyWithNullableAttributes_notAddedAndThrowDBModificationException () {
         //Given
         long oldCount = companyRepository.allCount();
 
         //When
-        RepositoryException thrown = Assertions.assertThrows(RepositoryException.class, () ->
+        DBModificationException thrown = Assertions.assertThrows(DBModificationException.class, () ->
                 companyRepository.add(
                 new Company(null,//
                         null,//
@@ -113,7 +113,7 @@ public class CompanyRepositoryTests {
                 new Company(null,//
                         "newCompany",//
                         "newCompany@mail.com",//
-                        new Timestamp(System.currentTimeMillis()),//
+                        null,//
                         "newCompanyDescription"));
         long oldCount = companyRepository.allCount();
 
@@ -122,7 +122,7 @@ public class CompanyRepositoryTests {
                 new Company(id1,//
                         "newCompany2",//
                         "newCompany2@mail.com",//
-                        new Timestamp(System.currentTimeMillis()),//
+                        null,//
                         "newCompanyDescription"));
 
         //Then
@@ -139,7 +139,7 @@ public class CompanyRepositoryTests {
                 new Company(null,//
                         "newCompany",//
                         "newCompany@mail.com",//
-                        new Timestamp(System.currentTimeMillis()),//
+                        null,//
                         "newCompanyDescription"));
         Company company = companyRepository.findById(id);
         company.setName("newCompanyUpdate");
@@ -156,24 +156,24 @@ public class CompanyRepositoryTests {
     }
 
     @Test
-    void update_updateNotExistCompany_companiesListNotChangedAndThrowRepositoryException() {
+    void update_updateNotExistCompany_companiesListNotChangedAndThrowDBModificationException() {
         //Given
         long id = companyRepository.add(
                 new Company(null,//
                         "newCompany",//
                         "newCompany@mail.com",//
-                        new Timestamp(System.currentTimeMillis()),//
+                        null,//
                         "newCompanyDescription"));
         companyRepository.deleteById(id);
         List<Company> companies = companyRepository.findAll();
 
         //When
-        RepositoryException thrown = Assertions.assertThrows(RepositoryException.class, () ->
+        DBModificationException thrown = Assertions.assertThrows(DBModificationException.class, () ->
                 companyRepository.update(
                 new Company(id,//
                         "newCompanyUpdate",//
                         "newCompanyUpdate@mail.com",//
-                        new Timestamp(System.currentTimeMillis()),//
+                        null,//
                         "newCompanyDescription Update")));
 
         //Then
@@ -190,7 +190,7 @@ public class CompanyRepositoryTests {
                 new Company(null,//
                         "newCompany",//
                         "newCompany@mail.com",//
-                        new Timestamp(System.currentTimeMillis()),//
+                        null,//
                         "newCompanyDescription"));
         long oldCount = companyRepository.allCount();
 
@@ -203,20 +203,20 @@ public class CompanyRepositoryTests {
     }
 
     @Test
-    void deleteById_deleteNotExistCompany_countNotChangedAndThrowRepositoryException() {
+    void deleteById_deleteNotExistCompany_countNotChangedAndThrowDBModificationException() {
         //Given
         long id;
         id = companyRepository.add(
                 new Company(null,//
                         "newCompany",//
                         "newCompany@mail.com",//
-                        new Timestamp(System.currentTimeMillis()),//
+                        null,//
                         "newCompanyDescription"));
         companyRepository.deleteById(id);
         long oldCount = companyRepository.allCount();
 
         //When
-        RepositoryException thrown = Assertions.assertThrows(RepositoryException.class, () ->
+        DBModificationException thrown = Assertions.assertThrows(DBModificationException.class, () ->
                 companyRepository.deleteById(id));
 
         //Then
@@ -233,7 +233,7 @@ public class CompanyRepositoryTests {
                 new Company(null,//
                         "newCompany",//
                         "newCompany@mail.com",//
-                        new Timestamp(System.currentTimeMillis()),//
+                        null,//
                         "newCompanyDescription"));
 
         //When
@@ -251,7 +251,7 @@ public class CompanyRepositoryTests {
                 new Company(null,//
                         "newCompany",//
                         "newCompany@mail.com",//
-                        new Timestamp(System.currentTimeMillis()),//
+                        null,//
                         "newCompanyDescription"));
         companyRepository.deleteById(id);
 
@@ -269,19 +269,19 @@ public class CompanyRepositoryTests {
                 new Company(null,//
                         "newCompany",//
                         "newCompany@mail.com",//
-                        new Timestamp(System.currentTimeMillis()),//
+                        null,//
                         "newCompanyDescription"));
         companyRepository.add(
                 new Company(null,//
                         "Company1",//
                         "Company@mail.com",//
-                        new Timestamp(System.currentTimeMillis()),//
+                        null,//
                         "Company1 Description"));
         companyRepository.add(
                 new Company(null,//
                         "Company2",//
                         "Company@mail.com",//
-                        new Timestamp(System.currentTimeMillis()),//
+                        null,//
                         "Company Description"));
 
         //When
@@ -300,19 +300,19 @@ public class CompanyRepositoryTests {
                 new Company(null,//
                         "newCompany",//
                         "newCompany@mail.com",//
-                        new Timestamp(System.currentTimeMillis()),//
+                        null,//
                         "newCompanyDescription"));
         long id2 = companyRepository.add(
                 new Company(null,//
                         "Company1",//
                         "Company@mail.com",//
-                        new Timestamp(System.currentTimeMillis()),//
+                        null,//
                         "Company1 Description"));
         long id3 = companyRepository.add(
                 new Company(null,//
                         "Company2",//
                         "Company@mail.com",//
-                        new Timestamp(System.currentTimeMillis()),//
+                        null,//
                         "Company Description"));
 
         //When
@@ -333,19 +333,19 @@ public class CompanyRepositoryTests {
                 new Company(null,//
                         "newCompany",//
                         "newCompany@mail.com",//
-                        new Timestamp(System.currentTimeMillis()),//
+                        null,//
                         "newCompanyDescription"));
         long id2 = companyRepository.add(
                 new Company(null,//
                         "Company1",//
                         "Company@mail.com",//
-                        new Timestamp(System.currentTimeMillis()),//
+                        null,//
                         "Company1 Description"));
         long id3 = companyRepository.add(
                 new Company(null,//
                         "Company2",//
                         "Company@mail.com",//
-                        new Timestamp(System.currentTimeMillis()),//
+                        null,//
                         "Company Description"));
 
         //When
@@ -366,19 +366,19 @@ public class CompanyRepositoryTests {
                 new Company(null,//
                         "newCompany",//
                         "newCompany@mail.com",//
-                        new Timestamp(System.currentTimeMillis()),//
+                        null,//
                         "newCompanyDescription"));
         companyRepository.add(
                 new Company(null,//
                         "Company1",//
                         "Company@mail.com",//
-                        new Timestamp(System.currentTimeMillis()),//
+                        null,//
                         "Company1 Description"));
         companyRepository.add(
                 new Company(null,//
                         "Company2",//
                         "Company@mail.com",//
-                        new Timestamp(System.currentTimeMillis()),//
+                        null,//
                         "Company Description"));
 
         //When
@@ -396,19 +396,19 @@ public class CompanyRepositoryTests {
                 new Company(null,//
                         "newCompany",//
                         "newCompany@mail.com",//
-                        new Timestamp(System.currentTimeMillis()),//
+                        null,//
                         "newCompanyDescription"));
         companyRepository.add(
                 new Company(null,//
                         "Company1",//
                         "Company@mail.com",//
-                        new Timestamp(System.currentTimeMillis()),//
+                        null,//
                         "Company1 Description"));
         companyRepository.add(
                 new Company(null,//
                         "Company2",//
                         "Company@mail.com",//
-                        new Timestamp(System.currentTimeMillis()),//
+                        null,//
                         "Company Description"));
 
         //When
@@ -426,19 +426,19 @@ public class CompanyRepositoryTests {
                 new Company(null,//
                         "newCompany",//
                         "newCompany@mail.com",//
-                        new Timestamp(System.currentTimeMillis()),//
+                        null,//
                         "newCompanyDescription"));
         companyRepository.add(
                 new Company(null,//
                         "Company1",//
                         "Company@mail.com",//
-                        new Timestamp(System.currentTimeMillis()),//
+                        null,//
                         "Company1 Description"));
         companyRepository.add(
                 new Company(null,//
                         "Company2",//
                         "Company@mail.com",//
-                        new Timestamp(System.currentTimeMillis()),//
+                        null,//
                         "Company Description"));
 
         //When
@@ -456,19 +456,19 @@ public class CompanyRepositoryTests {
                 new Company(null,//
                         "newCompany",//
                         "newCompany@mail.com",//
-                        new Timestamp(System.currentTimeMillis()),//
+                        null,//
                         "newCompanyDescription"));
         companyRepository.add(
                 new Company(null,//
                         "Company1",//
                         "Company@mail.com",//
-                        new Timestamp(System.currentTimeMillis()),//
+                        null,//
                         "Company1 Description"));
         companyRepository.add(
                 new Company(null,//
                         "Company2",//
                         "Company@mail.com",//
-                        new Timestamp(System.currentTimeMillis()),//
+                        null,//
                         "Company Description"));
 
         //When

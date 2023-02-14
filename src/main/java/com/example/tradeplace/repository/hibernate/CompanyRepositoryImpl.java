@@ -2,6 +2,9 @@ package com.example.tradeplace.repository.hibernate;
 
 import com.example.tradeplace.entity.Company;
 import com.example.tradeplace.repository.CompanyRepository;
+import com.example.tradeplace.repository.exceptions.DBModificationException;
+import com.example.tradeplace.repository.exceptions.DBNotFoundException;
+import com.example.tradeplace.repository.exceptions.RepositoryException;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
@@ -13,7 +16,9 @@ import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -29,13 +34,14 @@ public class CompanyRepositoryImpl  implements CompanyRepository {
 
     @Override
     public long add(Company company){
-        long result = 0;
+        long result;
         try (Session session = sessionFactory.openSession()) {
             Transaction transaction = session.beginTransaction();
+            company.setCreated(new Timestamp(new Date().getTime()));
             result = (long) session.save(company);
             transaction.commit();
-        } catch (Exception e) {
-            throw new RepositoryException("Company", "add", company.toString(), e);
+        }catch (Exception e) {
+            throw new DBModificationException("Company", "add", company.toString(), e);
         }
         return result;
     }
@@ -46,8 +52,8 @@ public class CompanyRepositoryImpl  implements CompanyRepository {
             Transaction transaction = session.beginTransaction();
             session.update(company);
             transaction.commit();
-        } catch (Exception e) {
-            throw new RepositoryException("Company", "update", company.toString(), e);
+        }catch (Exception e) {
+            throw new DBModificationException("Company", "update", company.toString(), e);
         }
     }
 
@@ -57,10 +63,9 @@ public class CompanyRepositoryImpl  implements CompanyRepository {
             Transaction transaction = session.beginTransaction();
             session.delete(session.get(Company.class, id));
             transaction.commit();
-        } catch (Exception e) {
-            throw new RepositoryException("Company", "deleteById", Long.toString(id), e);
+        }catch (Exception e) {
+            throw new DBModificationException("Company", "deleteById", Long.toString(id), e);
         }
-
     }
 
     @Override
@@ -71,7 +76,7 @@ public class CompanyRepositoryImpl  implements CompanyRepository {
             result = session.get(Company.class, id);
             transaction.commit();
         } catch (Exception e) {
-            throw new RepositoryException("Company", "findById", Long.toString(id), e);
+            throw new DBNotFoundException("Company", "findById", Long.toString(id), e);
         }
         return result;
     }
@@ -92,7 +97,7 @@ public class CompanyRepositoryImpl  implements CompanyRepository {
 
             transaction.commit();
         } catch (Exception e) {
-            throw new RepositoryException("Company", "findAll", "", e);
+            throw new DBNotFoundException("Company", "findAll", "", e);
         }
         return companies;
 
@@ -119,7 +124,7 @@ public class CompanyRepositoryImpl  implements CompanyRepository {
         } catch (Exception e) {
             String params = "pageNum: "+Long.toString(pageNum)+"; "+//
                     "pageSize: "+Long.toString(pageSize);
-            throw new RepositoryException("Company", "findAll", params, e);
+            throw new DBNotFoundException("Company", "findAll", params, e);
         }
         return companies;
 
@@ -142,8 +147,9 @@ public class CompanyRepositoryImpl  implements CompanyRepository {
             if (email != null) {
                 predicates.add(cb.equal(root.get("email"), email));
             }
-            cq.where(predicates.toArray(new Predicate[0]));
-
+            if (!predicates.isEmpty()) {
+                cq.where(predicates.toArray(new Predicate[0]));
+            }
             Transaction transaction = session.beginTransaction();
 
             companies = session.createQuery(cq)//
@@ -162,7 +168,7 @@ public class CompanyRepositoryImpl  implements CompanyRepository {
             }
             params +="pageNum: "+Long.toString(pageNum)+"; "+//
                     "pageSize: "+Long.toString(pageSize);
-            throw new RepositoryException("Company", "findByNameAndEmail", params, e);
+            throw new DBNotFoundException("Company", "findByNameAndEmail", params, e);
         }
         return companies;
     }

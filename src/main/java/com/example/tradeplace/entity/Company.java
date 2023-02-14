@@ -29,10 +29,10 @@ public class Company {
     @Column(name = "email",  nullable = false)
     private String email;
 
-    @Setter(AccessLevel.NONE)
     @Column(name = "created", nullable = false)
     private Timestamp created;
 
     @Column(name = "description",  nullable = false)
     private String description;
+
 }

@@ -1,7 +1,6 @@
 package com.example.tradeplace.repository;
 
 import com.example.tradeplace.entity.Company;
-import com.example.tradeplace.repository.hibernate.RepositoryException;
 
 import java.util.List;
 

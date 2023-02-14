@@ -1,4 +1,4 @@
-package com.example.tradeplace.repository.hibernate;
+package com.example.tradeplace.repository.exceptions;
 
 
 import lombok.Getter;
@@ -16,6 +16,13 @@ public class RepositoryException extends RuntimeException {
         this.repositoryName = repositoryName;
         this.methodName = methodName;
         this.methodParams = methodParams;
+    }
+
+    public RepositoryException(RepositoryException e) {
+        super(e);
+        this.repositoryName = e.getRepositoryName();
+        this.methodName = e.getMethodName();
+        this.methodParams = e.getMethodParams();
     }
 
 }
